@@ -30,8 +30,8 @@ spec:
           {{- toYaml .Values.llm.resources | nindent 10 }}
         expose:
           service:
-            type: ClusterIP
-            port: 8000
+            type: {{ .Values.llm.service.type | default "ClusterIP" }}
+            port: {{ .Values.llm.service.port | default 8000 }}
         {{- if .Values.llm.autoScale.enabled }}
         scale:
           enabled: {{ .Values.llm.autoScale.enabled }}
@@ -65,10 +65,10 @@ spec:
           {{- toYaml .Values.embedding.resources | nindent 10 }}
         expose:
           service:
-            type: ClusterIP
-            port: 8000
-            grpcPort: 8001
-            metricsPort: 8002
+            type: {{ .Values.embedding.service.type | default "ClusterIP" }}
+            port: {{ .Values.embedding.service.port | default 8000 }}
+            grpcPort: {{ .Values.embedding.service.grpcPort | default 8001 }}
+            metricsPort: {{ .Values.embedding.service.metricsPort | default 8002 }}
         {{- if .Values.embedding.autoScale.enabled }}
         scale:
           enabled: {{ .Values.embedding.autoScale.enabled }}
@@ -102,10 +102,10 @@ spec:
           {{ toYaml .Values.reranking.resources | nindent 10 }}
         expose:
           service:
-            type: ClusterIP
-            port: 8000
-            grpcPort: 8001
-            metricsPort: 8002
+            type: {{ .Values.reranking.service.type | default "ClusterIP" }}
+            port: {{ .Values.reranking.service.port | default 8000 }}
+            grpcPort: {{ .Values.reranking.service.grpcPort | default 8001 }}
+            metricsPort: {{ .Values.reranking.service.metricsPort | default 8002 }}
         {{- if .Values.reranking.autoScale.enabled }}
         scale:
           enabled: {{ .Values.reranking.autoScale.enabled }}
@@ -139,8 +139,10 @@ spec:
           {{- toYaml .Values.paddleOcr.resources | nindent 10 }}
         expose:
           service:
-            type: ClusterIP
-            port: 8000
+            type: {{ .Values.paddleOcr.service.type | default "ClusterIP" }}
+            port: {{ .Values.paddleOcr.service.port | default 8000 }}
+            grpcPort: {{ .Values.paddleOcr.service.grpcPort | default 8001 }}
+            metricsPort: {{ .Values.paddleOcr.service.metricsPort | default 8002 }}
         {{- if .Values.paddleOcr.autoScale.enabled }}
         scale:
           enabled: {{ .Values.paddleOcr.autoScale.enabled }}
@@ -174,8 +176,10 @@ spec:
           {{- toYaml .Values.graphicElements.resources | nindent 10 }}
         expose:
           service:
-            type: ClusterIP
-            port: 8000
+            type: {{ .Values.graphicElements.service.type | default "ClusterIP" }}
+            port: {{ .Values.graphicElements.service.port | default 8000 }}
+            grpcPort: {{ .Values.graphicElements.service.grpcPort | default 8001 }}
+            metricsPort: {{ .Values.graphicElements.service.metricsPort | default 8002 }}
         {{- if .Values.graphicElements.autoScale.enabled }}
         scale:
           enabled: {{ .Values.graphicElements.autoScale.enabled }}
@@ -209,8 +213,10 @@ spec:
           {{- toYaml .Values.pageElements.resources | nindent 10 }}
         expose:
           service:
-            type: ClusterIP
-            port: 8000
+            type: {{ .Values.pageElements.service.type | default "ClusterIP" }}
+            port: {{ .Values.pageElements.service.port | default 8000 }}
+            grpcPort: {{ .Values.pageElements.service.grpcPort | default 8001 }}
+            metricsPort: {{ .Values.pageElements.service.metricsPort | default 8002 }}
         {{- if .Values.pageElements.autoScale.enabled }}
         scale:
           enabled: {{ .Values.pageElements.autoScale.enabled }}
@@ -244,8 +250,10 @@ spec:
           {{- toYaml .Values.tableStructure.resources | nindent 10 }}
         expose:
           service:
-            type: ClusterIP
-            port: 8000
+            type: {{ .Values.tableStructure.service.type | default "ClusterIP" }}
+            port: {{ .Values.tableStructure.service.port | default 8000 }}
+            grpcPort: {{ .Values.tableStructure.service.grpcPort | default 8001 }}
+            metricsPort: {{ .Values.tableStructure.service.metricsPort | default 8002 }}
         {{- if .Values.tableStructure.autoScale.enabled }}
         scale:
           enabled: {{ .Values.tableStructure.autoScale.enabled }}
