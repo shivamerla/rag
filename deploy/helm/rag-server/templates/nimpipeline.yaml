@@ -113,3 +113,143 @@ spec:
             {{- toYaml .Values.reranking.autoScale.hpa | nindent 12 }}
         {{- end }}
     {{- end }}
+    {{- if .Values.paddleOcr.enabled }}
+    - name: {{ .Values.paddleOcr.service.name }}
+      enabled: {{ .Values.paddleOcr.enabled }}
+      spec:
+        image:
+          repository: {{ .Values.paddleOcr.image.repository }}
+          tag: {{ .Values.paddleOcr.image.tag | quote }}
+          pullPolicy: {{ .Values.paddleOcr.image.pullPolicy }}
+          pullSecrets:
+            - {{ .Values.imagePullSecret.name }}
+        authSecret: {{ .Values.ngcApiSecret.name }}
+        storage:
+          pvc:
+            create: {{ .Values.paddleOcr.pvc.create }}
+            storageClass: {{ .Values.paddleOcr.pvc.storageClass }}
+            size: {{ .Values.paddleOcr.pvc.size }}
+            {{ with .Values.paddleOcr.pvc.annotations }}
+            annotations:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            volumeAccessMode: {{ .Values.llm.pvc.accessMode }}
+        replicas: {{ .Values.paddleOcr.replicas | default 1 }}
+        resources:
+          {{- toYaml .Values.paddleOcr.resources | nindent 10 }}
+        expose:
+          service:
+            type: ClusterIP
+            port: 8000
+        {{- if .Values.paddleOcr.autoScale.enabled }}
+        scale:
+          enabled: {{ .Values.paddleOcr.autoScale.enabled }}
+          hpa: 
+            {{- toYaml .Values.paddleOcr.autoScale.hpa | nindent 12 }}
+        {{- end }}
+    {{- end }}
+    {{- if .Values.graphicElements.enabled }}
+    - name: {{ .Values.graphicElements.service.name }}
+      enabled: {{ .Values.graphicElements.enabled }}
+      spec:
+        image:
+          repository: {{ .Values.graphicElements.image.repository }}
+          tag: {{ .Values.graphicElements.image.tag | quote }}
+          pullPolicy: {{ .Values.graphicElements.image.pullPolicy }}
+          pullSecrets:
+            - {{ .Values.imagePullSecret.name }}
+        authSecret: {{ .Values.ngcApiSecret.name }}
+        storage:
+          pvc:
+            create: {{ .Values.graphicElements.pvc.create }}
+            storageClass: {{ .Values.graphicElements.pvc.storageClass }}
+            size: {{ .Values.graphicElements.pvc.size }}
+            {{ with .Values.graphicElements.pvc.annotations }}
+            annotations:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            volumeAccessMode: {{ .Values.graphicElements.pvc.accessMode }}
+        replicas: {{ .Values.graphicElements.replicas | default 1 }}
+        resources:
+          {{- toYaml .Values.graphicElements.resources | nindent 10 }}
+        expose:
+          service:
+            type: ClusterIP
+            port: 8000
+        {{- if .Values.graphicElements.autoScale.enabled }}
+        scale:
+          enabled: {{ .Values.graphicElements.autoScale.enabled }}
+          hpa: 
+            {{- toYaml .Values.graphicElements.autoScale.hpa | nindent 12 }}
+        {{- end }}
+    {{- end }}
+    {{- if .Values.pageElements.enabled }}
+    - name: {{ .Values.pageElements.service.name }}
+      enabled: {{ .Values.pageElements.enabled }}
+      spec:
+        image:
+          repository: {{ .Values.pageElements.image.repository }}
+          tag: {{ .Values.pageElements.image.tag | quote }}
+          pullPolicy: {{ .Values.pageElements.image.pullPolicy }}
+          pullSecrets:
+            - {{ .Values.imagePullSecret.name }}
+        authSecret: {{ .Values.ngcApiSecret.name }}
+        storage:
+          pvc:
+            create: {{ .Values.pageElements.pvc.create }}
+            storageClass: {{ .Values.pageElements.pvc.storageClass }}
+            size: {{ .Values.pageElements.pvc.size }}
+            {{ with .Values.pageElements.pvc.annotations }}
+            annotations:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            volumeAccessMode: {{ .Values.pageElements.pvc.accessMode }}
+        replicas: {{ .Values.pageElements.replicas | default 1 }}
+        resources:
+          {{- toYaml .Values.pageElements.resources | nindent 10 }}
+        expose:
+          service:
+            type: ClusterIP
+            port: 8000
+        {{- if .Values.pageElements.autoScale.enabled }}
+        scale:
+          enabled: {{ .Values.pageElements.autoScale.enabled }}
+          hpa: 
+            {{- toYaml .Values.pageElements.autoScale.hpa | nindent 12 }}
+        {{- end }}
+    {{- end }}
+    {{- if .Values.tableStructure.enabled }}
+    - name: {{ .Values.tableStructure.service.name }}
+      enabled: {{ .Values.tableStructure.enabled }}
+      spec:
+        image:
+          repository: {{ .Values.tableStructure.image.repository }}
+          tag: {{ .Values.tableStructure.image.tag | quote }}
+          pullPolicy: {{ .Values.tableStructure.image.pullPolicy }}
+          pullSecrets:
+            - {{ .Values.imagePullSecret.name }}
+        authSecret: {{ .Values.ngcApiSecret.name }}
+        storage:
+          pvc:
+            create: {{ .Values.tableStructure.pvc.create }}
+            storageClass: {{ .Values.tableStructure.pvc.storageClass }}
+            size: {{ .Values.tableStructure.pvc.size }}
+            {{ with .Values.tableStructure.pvc.annotations }}
+            annotations:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            volumeAccessMode: {{ .Values.tableStructure.pvc.accessMode }}
+        replicas: {{ .Values.tableStructure.replicas | default 1 }}
+        resources:
+          {{- toYaml .Values.tableStructure.resources | nindent 10 }}
+        expose:
+          service:
+            type: ClusterIP
+            port: 8000
+        {{- if .Values.tableStructure.autoScale.enabled }}
+        scale:
+          enabled: {{ .Values.tableStructure.autoScale.enabled }}
+          hpa: 
+            {{- toYaml .Values.tableStructure.autoScale.hpa | nindent 12 }}
+        {{- end }}
+    {{- end }}
