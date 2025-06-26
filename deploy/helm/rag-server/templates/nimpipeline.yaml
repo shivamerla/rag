@@ -1,0 +1,115 @@
+apiVersion: apps.nvidia.com/v1alpha1
+kind: NIMPipeline
+metadata:
+  name: rag-blueprint
+spec:
+  services:
+    {{- if .Values.llm.enabled }}
+    - name: {{ .Values.llm.service.name }}
+      enabled: {{ .Values.llm.enabled }}
+      spec:
+        image:
+          repository: {{ .Values.llm.image.repository }}
+          tag: {{ .Values.llm.image.tag | quote }}
+          pullPolicy: {{ .Values.llm.image.pullPolicy }}
+          pullSecrets:
+            - {{ .Values.imagePullSecret.name }}
+        authSecret: {{ .Values.ngcApiSecret.name }}
+        storage:
+          pvc:
+            create: {{ .Values.llm.pvc.create }}
+            storageClass: {{ .Values.llm.pvc.storageClass }}
+            size: {{ .Values.llm.pvc.size }}
+            {{ with .Values.llm.pvc.annotations }}
+            annotations:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            volumeAccessMode: {{ .Values.llm.pvc.accessMode }}
+        replicas: {{ .Values.llm.replicas | default 1 }}
+        resources:
+          {{- toYaml .Values.llm.resources | nindent 10 }}
+        expose:
+          service:
+            type: ClusterIP
+            port: 8000
+        {{- if .Values.llm.autoScale.enabled }}
+        scale:
+          enabled: {{ .Values.llm.autoScale.enabled }}
+          hpa: 
+            {{- toYaml .Values.llm.autoScale.hpa | nindent 12 }}
+        {{- end }}
+    {{- end }}
+    {{- if .Values.embedding.enabled }}
+    - name: {{ .Values.embedding.service.name }}
+      enabled: {{ default false .Values.embedding.enabled }}
+      spec:
+        image:
+          repository: {{ .Values.embedding.image.repository }}
+          tag: {{ .Values.embedding.image.tag | quote }}
+          pullPolicy: {{ .Values.embedding.image.pullPolicy }}
+          pullSecrets:
+          - {{ .Values.imagePullSecret.name }}
+        authSecret: {{ .Values.ngcApiSecret.name }}
+        storage:
+          pvc:
+            create: {{ default false .Values.embedding.pvc.create }}
+            storageClass: {{ .Values.embedding.pvc.storageClass }}
+            size: {{ .Values.embedding.pvc.size | quote }}
+            {{- with .Values.embedding.pvc.annotations }}
+            annotations:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            volumeAccessMode: {{ .Values.embedding.pvc.accessMode }}
+        replicas: {{ .Values.embedding.replicas | default 1 }}
+        resources:
+          {{- toYaml .Values.embedding.resources | nindent 10 }}
+        expose:
+          service:
+            type: ClusterIP
+            port: 8000
+            grpcPort: 8001
+            metricsPort: 8002
+        {{- if .Values.embedding.autoScale.enabled }}
+        scale:
+          enabled: {{ .Values.embedding.autoScale.enabled }}
+          hpa: 
+            {{- toYaml .Values.embedding.autoScale.hpa | nindent 12 }}
+        {{- end }}
+    {{- end }}
+    {{- if .Values.reranking.enabled }}
+    - name: {{ .Values.reranking.service.name }}
+      enabled: {{ default false .Values.reranking.enabled }}
+      spec:
+        image:
+          repository: {{ .Values.reranking.image.repository }}
+          tag: {{ .Values.reranking.image.tag | quote }}
+          pullPolicy: {{ .Values.reranking.image.pullPolicy }}
+          pullSecrets:
+          - {{ .Values.imagePullSecret.name }}
+        authSecret: {{ .Values.ngcApiSecret.name }}
+        storage:
+          pvc:
+            create: {{ default false .Values.reranking.pvc.create }}
+            storageClass: {{ .Values.reranking.pvc.storageClass }}
+            size: {{ .Values.reranking.pvc.size }}
+            {{- with .Values.reranking.pvc.annotations }}
+            annotations:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            volumeAccessMode: {{ .Values.reranking.pvc.accessMode }}
+        replicas: {{ .Values.reranking.replicas | default 1 }}
+        resources:
+          {{ toYaml .Values.reranking.resources | nindent 10 }}
+        expose:
+          service:
+            type: ClusterIP
+            port: 8000
+            grpcPort: 8001
+            metricsPort: 8002
+        {{- if .Values.reranking.autoScale.enabled }}
+        scale:
+          enabled: {{ .Values.reranking.autoScale.enabled }}
+          hpa: 
+            {{- toYaml .Values.reranking.autoScale.hpa | nindent 12 }}
+        {{- end }}
+    {{- end }}
